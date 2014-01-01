@@ -36,6 +36,9 @@ class Test_DateTime : public QObject
 
         void test_setTime();
         void test_setTime_data();
+
+        void test_timeSince2000();
+        void test_timeSince2000_data();
 };
 
 void Test_DateTime::test_bcd2uint_data()
@@ -127,6 +130,93 @@ void Test_DateTime::test_setTime()
     QCOMPARE(quickDateString.mid(21,1).toInt(), (int)dt.bcd2uint(dt.dow));
 }
 
+void Test_DateTime::test_timeSince2000_data()
+{
+    QTest::addColumn<QString>("quickDateString");
+    QTest::addColumn<unsigned int>("days");
+    QTest::addColumn<unsigned int>("sec");
+
+    //Seconds per day: 24*60*60=86400 (not counting leap seconds)
+
+    QTest::newRow("2000-01-02 00:00:00") << "2000-01-02T00:00:00Z_1"
+        << (unsigned int)(1)
+        << (unsigned int)(1*24*60*60);
+
+    QTest::newRow("test") << "2000-02-01T00:00:00Z_1"
+        << (unsigned int)(31)
+        << (unsigned int)(31*24*60*60);
+
+    QTest::newRow("test") << "2000-03-01T00:00:00Z_1"
+        << (unsigned int) (31+29)
+        << (unsigned int)((31+29)*24*60*60);
+
+    QTest::newRow("test") << "2001-01-01T00:00:00Z_1"
+        << (unsigned int)(366)
+        << (unsigned int)(366*24*60*60);
+
+    QTest::newRow("test") << "2002-01-01T00:00:00Z_1"
+        << (unsigned int) (366+365)
+        << (unsigned int)((366+365)*24*60*60);
+
+    unsigned int days = (366*3)+(365*7);
+    QTest::newRow("test") << "2010-01-01T00:00:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)(days*24*60*60);
+
+    //month: 1  2  3  4  5  6  7  8 // 9 10 11 12
+    days += 31+28+31+30+31+30+31+31;//+30+31+30+31;
+    QTest::newRow("test") << "2010-09-01T00:00:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)(days*24*60*60);
+
+    days += 10;
+    QTest::newRow("test") << "2010-09-11T00:00:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)(days*24*60*60);
+
+    QTest::newRow("test") << "2010-09-11T14:00:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)((days*24*60*60)+(14*60*60));
+
+    QTest::newRow("test") << "2010-09-11T14:23:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)((days*24*60*60)+(14*60*60)+(23*60));
+
+    QTest::newRow("test") << "2010-09-11T14:23:12Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)((days*24*60*60)+(14*60*60)+(23*60)+12);
+
+
+    //And test with a leap year
+    days = (366*3)+(365*9);
+    QTest::newRow("test") << "2012-01-01T00:00:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)(days*24*60*60);
+
+    //month: 1  2  3  4  5  6  7  8  9 10 11 // 12
+    days += 31+29+31+30+31+30+31+31+30+31+30;//+31;
+    QTest::newRow("test") << "2012-12-01T00:00:00Z_1"
+        << (unsigned int)(days)
+        << (unsigned int)(days*24*60*60);
+}
+
+void Test_DateTime::test_timeSince2000()
+{
+    QFETCH(QString, quickDateString);
+    QFETCH(unsigned int, days);
+    QFETCH(unsigned int, sec);
+
+    DateTime dt;
+    quickDateString = quickDateString.trimmed();
+
+    char* str = quickDateString.toAscii().data();
+    //qDebug() << str;
+
+    QVERIFY(dt.setTime(str));
+
+    QCOMPARE((unsigned int)dt.daySince2000(), days);
+    QCOMPARE((unsigned int)dt.secSince2000(), sec);
+}
 
 QTEST_MAIN(Test_DateTime)
 #include "Test_DateTime.moc"

@@ -1,12 +1,30 @@
+/**
+ * @file DateTime.cpp
+ * @author Johan Simonsson
+ * @brief A date time class where data is stored as bcd data
+ */
 
-#include "DateTime.h"
+/*
+ * Copyright (C) 2014 Johan Simonsson
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include <inttypes.h>
 #include <string.h>
 
-//DateTime::DateTime (char* quickDateString)
-//{
-    //setTime(quickDateString);
-//}
+#include "DateTime.h"
 
 bool DateTime::setTime(char* quickDateString)
 {
@@ -42,9 +60,6 @@ bool DateTime::setTime(char* quickDateString)
     return false;
 }
 
-
-
-
 uint8_t DateTime::bcd2uint(uint8_t bcd)
 {
     /// @todo Check for non dec num in bcd...
@@ -69,4 +84,73 @@ uint8_t DateTime::str2bcd(char ch0, char ch1)
     res += ch1-'0';
 
     return res;
+}
+
+uint16_t DateTime::daySince2000()
+{
+    uint16_t days = 0;
+
+    //First some years.
+    for( unsigned int y = 0 ; y < bcd2uint(year) ; y++ )
+    {
+        //Leap year has 366 days (and 2000 was a leap year)
+        if(y%4==0)
+            days+=366;
+        else
+            days+=365;
+    }
+
+    //The length of the months is a strange thing...!
+    for( unsigned int m = 1 ; m < bcd2uint(month) ; m++ )
+    {
+        if(m<=7)
+        {
+            if(m==2)
+            {
+                if( (bcd2uint(year)%4)==0 )
+                {
+                    days+=29;
+                }
+                else
+                {
+                    days+=28;
+                }
+            }
+            else if(m%2==0)
+            {
+                days+=30;
+            }
+            else
+            {
+                days+=31;
+            }
+        }
+        else
+        {
+            if(m%2==0)
+            {
+                days+=31;
+            }
+            else
+            {
+                days+=30;
+            }
+        }
+    }
+
+    days+=(bcd2uint(day)-1);
+
+    return days;
+}
+
+uint32_t DateTime::secSince2000()
+{
+    uint32_t seconds = (uint32_t)daySince2000();
+    seconds *= 86400;
+
+    seconds += bcd2uint(hour)*60*60;
+    seconds += bcd2uint(min)*60;
+    seconds += bcd2uint(sec);
+
+    return seconds;
 }
