@@ -1,11 +1,17 @@
 /**
- * @file QuickDate.h
+ * @file RTC_DS1307.h
  * @author Johan Simonsson
- * @brief Get the time from QuickDate.php and save into a DS1307
+ * @brief Interface class for the DS1307 RTC
+ *
+ * This code is inspired by:
+ * Code by JeeLabs http://news.jeelabs.org/code/
+ *
+ * And the works done by Adafruit
+ * https://github.com/adafruit/RTClib
  */
 
 /*
- * Copyright (C) 2013 Johan Simonsson
+ * Copyright (C) 2014 Johan Simonsson
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,27 +27,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef  __QUICKDATE_H
-#define  __QUICKDATE_H
-
-#include <Ethernet.h>
+#ifndef  __RTC_DS1307_H
+#define  __RTC_DS1307_H
 
 #include "DateTime.h"
 
-class QuickDate
+// RTC based on the DS1307 chip connected via I2C and the Wire library
+class RTC_DS1307
 {
     private:
-        EthernetClient client; ///< The http client
-        unsigned int syncTime; ///< How often shall we sync time in seconds?
-
-        DateTime timeNow;      ///< Current time
-        DateTime timeLastSync; ///< Last synced time
 
     public:
-        QuickDate(unsigned int doSyncTime);
-        unsigned int timeSinceLastSync();
-        int doTimeSync();
+        bool isrunning(void);
+        void sqw(uint8_t state);
 
+        void adjust(DateTime* dt);
+        bool getTime(DateTime* now, DateTime* last);
 };
 
-#endif  // __QUICKDATE_H
+#endif  // __RTC_DS1307_H

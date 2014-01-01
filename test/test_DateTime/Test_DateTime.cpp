@@ -108,19 +108,22 @@ void Test_DateTime::test_setTime()
     quickDateString = quickDateString.trimmed();
 
     char* str = quickDateString.toAscii().data();
-    str[22]='\0'; //Fix test input!!!
+    //str[22]='\0'; //Fix test input!!!
     //qDebug() << str;
 
     QVERIFY(dt.setTime(str));
 
+    // compare y-m-d
     QCOMPARE(quickDateString.mid(2,2).toInt(), (int)dt.bcd2uint(dt.year));
     QCOMPARE(quickDateString.mid(5,2).toInt(), (int)dt.bcd2uint(dt.month));
     QCOMPARE(quickDateString.mid(8,2).toInt(), (int)dt.bcd2uint(dt.day));
 
+    // compare h:m:s
     QCOMPARE(quickDateString.mid(11,2).toInt(), (int)dt.bcd2uint(dt.hour));
     QCOMPARE(quickDateString.mid(14,2).toInt(), (int)dt.bcd2uint(dt.min));
     QCOMPARE(quickDateString.mid(17,2).toInt(), (int)dt.bcd2uint(dt.sec));
 
+    // compare weekday
     QCOMPARE(quickDateString.mid(21,1).toInt(), (int)dt.bcd2uint(dt.dow));
 }
 
