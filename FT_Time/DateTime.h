@@ -11,7 +11,6 @@ class DateTime
         uint8_t str2bcd(char, char);
 
     public:
-        //Read is ok, but not writes!
         uint8_t year;  ///< 2 digit year 2000..2099 is 00..99 in BCD
         uint8_t month; ///< Month in BCD
         uint8_t day;   ///< Day in month in BCD
