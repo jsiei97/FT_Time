@@ -1,8 +1,11 @@
 #include <SPI.h>
 #include <Ethernet.h>
 #include <avr/wdt.h>
+#include <Wire.h>
 
 #include "QuickDate.h"
+#include "DateTime.h"
+#include "RTC_DS1307.h"
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
@@ -20,6 +23,10 @@ EthernetClient client;
 QuickDate qd;
 char qdBuff[25];
 
+DateTime now;
+DateTime last;
+RTC_DS1307 rtc;
+
 
 void setup()
 {
@@ -31,6 +38,8 @@ void setup()
 
     //http://www.nongnu.org/avr-libc/user-manual/group__avr__watchdog.html
     wdt_enable(WDTO_8S);
+
+    Wire.begin();
 
     // start the Ethernet connection:
     if (Ethernet.begin(mac) == 0) {
@@ -60,25 +69,25 @@ void loop()
     //prints time since program started
     Serial.println(time);
 
-    int qdStatus = qd.doTimeSync(qdBuff);
-    if(qdStatus > 0)
+    rtc.getTime(&now, &last);
+    if(!rtc.isrunning() || (now.secSince2000()-last.secSince2000()>15) )
     {
-        Serial.print("ok: ");
-        Serial.print(qdBuff);
-        Serial.print(" : ");
-    }
-    else
-    {
-        Serial.print("fail: ");
+        int qdStatus = qd.doTimeSync(qdBuff);
+        if(qdStatus > 0)
+        {
+            Serial.print("ok: ");
+            Serial.print(qdBuff);
+            Serial.print(" : ");
+            now.setTime(qdBuff);
+            rtc.adjust(&now);
+        }
+        else
+        {
+            Serial.print("fail: ");
+        }
+
+        Serial.println(qdStatus);
     }
 
-    Serial.println(qdStatus);
-
-
-    for(int i=0; i<2; i++)
-    {
-        Serial.print(".");
-        delay(1000);
-    }
-    Serial.println("");
+    delay(1000);
 }

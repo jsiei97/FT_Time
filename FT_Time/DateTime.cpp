@@ -26,6 +26,17 @@
 
 #include "DateTime.h"
 
+DateTime::DateTime()
+{
+        year  = 0;
+        month = 0;
+        day   = 0;
+        hour  = 0;
+        min   = 0;
+        sec   = 0;
+        dow   = 0;
+}
+
 bool DateTime::setTime(char* quickDateString)
 {
     int len = strlen(quickDateString);
