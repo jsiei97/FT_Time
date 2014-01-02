@@ -26,21 +26,13 @@
 
 #include <Ethernet.h>
 
-#include "DateTime.h"
-
 class QuickDate
 {
     private:
         EthernetClient client; ///< The http client
-        unsigned int syncTime; ///< How often shall we sync time in seconds?
-
-        DateTime timeNow;      ///< Current time
-        DateTime timeLastSync; ///< Last synced time
 
     public:
-        QuickDate(unsigned int doSyncTime);
-        unsigned int timeSinceLastSync();
-        int doTimeSync();
+        int doTimeSync(char*);
 
 };
 

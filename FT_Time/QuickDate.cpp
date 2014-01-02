@@ -24,42 +24,17 @@
 #include <Ethernet.h>
 #include "QuickDate.h"
 
-
-QuickDate::QuickDate(unsigned int doSyncTime)
-{
-    syncTime = doSyncTime;
-}
-
-
-/**
- * How many seconds since last sync?
- *
- * Read DS1307 0..7 and compare with 10..17
- * and calculate how many seconds past since last sync.
- *
- * @return seconds since last sync, 0 if no valid time
- */
-unsigned int QuickDate::timeSinceLastSync()
-{
-    return 0;
-}
-
 /**
  * Do timesync if it is time
  *
  * If more than X seconds has past since last sync,
  * then do another sync.
  *
+ * @param buff a buffer with size 25 that will return the quick date string
  * @return positive value if ok, negative if bad.
  */
-int QuickDate::doTimeSync()
+int QuickDate::doTimeSync(char* buff)
 {
-    unsigned int syncDiffTime = timeSinceLastSync();
-    if( (syncDiffTime != 0) && (syncDiffTime < syncTime) )
-    {
-        return 1;
-    }
-
     /// @todo dynamic server name... (same as the MQTT server? FT_EDS?)
     if (client.connect("scruffy", 80))
     {
@@ -82,7 +57,6 @@ int QuickDate::doTimeSync()
     //Wait a little for the server to react
     delay(1000);
 
-    char buff[25];
     unsigned int pos = 0;
     while(client.available() &&  pos < 24)
     {
@@ -106,7 +80,6 @@ int QuickDate::doTimeSync()
       )
     {
         //Serial.println("ok date");
-        /// @todo send string into parser that updates the ds1307
     }
     else
     {
@@ -117,6 +90,6 @@ int QuickDate::doTimeSync()
     //Serial.println("disconnecting.");
     client.stop();
 
-    return 2;
+    return 1;
 }
 

@@ -17,10 +17,11 @@ IPAddress ip(192,168,0,177);
 // with the IP address and port of the server
 // that you want to connect to (port 80 is default for HTTP):
 EthernetClient client;
-QuickDate qd(10);
+QuickDate qd;
+char qdBuff[25];
 
 
-void setup() 
+void setup()
 {
     // Open serial communications and wait for port to open:
     Serial.begin(9600);
@@ -59,11 +60,17 @@ void loop()
     //prints time since program started
     Serial.println(time);
 
-    int qdStatus = qd.doTimeSync();
+    int qdStatus = qd.doTimeSync(qdBuff);
     if(qdStatus > 0)
+    {
         Serial.print("ok: ");
+        Serial.print(qdBuff);
+        Serial.print(" : ");
+    }
     else
+    {
         Serial.print("fail: ");
+    }
 
     Serial.println(qdStatus);
 
@@ -74,5 +81,4 @@ void loop()
         delay(1000);
     }
     Serial.println("");
-
 }
