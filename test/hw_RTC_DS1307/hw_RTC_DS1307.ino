@@ -8,7 +8,7 @@ DateTime now;
 DateTime last;
 RTC_DS1307 rtc;
 
-void setup() 
+void setup()
 {
     // Open serial communications and wait for port to open:
     Serial.begin(9600);
@@ -66,13 +66,16 @@ void loop()
 
     rtc.getTime(&now, &last);
 
-    char datestr[25];    
-    snprintf(datestr, 24, "20%02x-%02x-%02x %02x:%02x:%02x %01x", 
-            now.year, now.month, now.day, 
+    char datestr[25];
+    snprintf(datestr, 24, "20%02x-%02x-%02x %02x:%02x:%02x %01x",
+            now.year, now.month, now.day,
             now.hour, now.min, now.sec,
             now.dow);
     Serial.println(datestr);
 
+    uint32_t timeSinceSync = now.secSince2000()-last.secSince2000();
 
+    Serial.print("Last sync: ");
+    Serial.println(timeSinceSync);
 
 }
