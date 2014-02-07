@@ -1,4 +1,4 @@
-CONFIG += qtestlib debug
+CONFIG += qtestlib debug console
 TEMPLATE = app
 TARGET =
 DEFINES += private=public
