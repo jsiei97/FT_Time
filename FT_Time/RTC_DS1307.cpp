@@ -34,15 +34,17 @@
 //#define WIRE Wire1
 //#endif
 
+/// I2C address for the DS1307
 #define DS1307_ADDRESS 0x68
-
-#define DS1307_SQW_ON  0x80
-#define DS1307_SQW_OFF 0x00
-#define DS1307_SQW_1HZ 0x10
 
 #include <Arduino.h>
 
-void RTC_DS1307::sqw(uint8_t state)
+/**
+ * Set square wave output state
+ *
+ * @param state sqw out
+ */
+void RTC_DS1307::sqw(SQW_State state)
 {
     //First update the normal clock
     Wire.beginTransmission(DS1307_ADDRESS);
@@ -51,6 +53,11 @@ void RTC_DS1307::sqw(uint8_t state)
     Wire.endTransmission();
 }
 
+/**
+ * Is the clock running?
+ *
+ * @return true if running
+ */
 bool RTC_DS1307::isrunning(void)
 {
     Wire.beginTransmission(DS1307_ADDRESS);
@@ -70,6 +77,13 @@ bool RTC_DS1307::isrunning(void)
     return true;
 }
 
+/**
+ * Update clock with new time.
+ *
+ * Always use UTC.
+ *
+ * @param dt new time to use.
+ */
 void RTC_DS1307::adjust(DateTime* dt)
 {
     //First update the normal clock
@@ -100,6 +114,16 @@ void RTC_DS1307::adjust(DateTime* dt)
     sqw(DS1307_SQW_1HZ);
 }
 
+/**
+ * Get time stored in DS1307.
+ *
+ * Return the current time, 
+ * and also return the time this clock was last updated.
+ *
+ * @param now current time
+ * @param last time clock was updated
+ * @return true if ok, false if clock is not running.
+ */
 bool RTC_DS1307::getTime(DateTime* now, DateTime* last)
 {
     if(!isrunning())

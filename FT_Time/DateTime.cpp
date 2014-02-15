@@ -37,6 +37,26 @@ DateTime::DateTime()
         dow   = 0;
 }
 
+/**
+ * Update with a new time
+ *
+ * String shall be in format "YYYY-MM-DDThh:mm:ssZ_w"
+ *
+ * Where YYYY is 4 digit year.
+ * MM is 2 digit month with leading zero.
+ * DD is 2 digit day with leading zero.
+ * T is the char T.
+ * hh is 2 digit hour with leading zero, 24h mode.
+ * mm is 2 digit minute with leading zero.
+ * ss is 2 digit second with leading zero.
+ * Z_ is the chars Z and _.
+ * w is 1 digit day of week.
+ * 
+ * Example: 2014-01-06T09:05:03Z_1
+ *
+ * @param quickDateString the date string
+ * @return true if ok
+ */
 bool DateTime::setTime(char* quickDateString)
 {
     int len = strlen(quickDateString);
@@ -71,6 +91,14 @@ bool DateTime::setTime(char* quickDateString)
     return false;
 }
 
+/**
+ * Convert a bcd (binary code decimal) into a normal number.
+ *
+ * If bcd is 0x43 the number becomes 43.
+ *
+ * @param bcd number in bcd format
+ * @return uint8_t with normal data
+ */
 uint8_t DateTime::bcd2uint(uint8_t bcd)
 {
     /// @todo Check for non dec num in bcd...
@@ -80,6 +108,15 @@ uint8_t DateTime::bcd2uint(uint8_t bcd)
     return res;
 }
 
+/**
+ * Convert a 2 char string into bcd (binary code decimal).
+ *
+ * If ch0='3' and ch1='6' the the result is 0x36.
+ *
+ * @param ch0 the first char in the string
+ * @param ch1 the second char in the string
+ * @return uint8_t with data in bcd.
+ */
 uint8_t DateTime::str2bcd(char ch0, char ch1)
 {
     uint8_t res;
@@ -97,6 +134,11 @@ uint8_t DateTime::str2bcd(char ch0, char ch1)
     return res;
 }
 
+/**
+ * How many days since 2000-01-01 00:00 UTC.
+ *
+ * @return uint16_t days since 2000.
+ */
 uint16_t DateTime::daySince2000()
 {
     uint16_t days = 0;
@@ -154,6 +196,11 @@ uint16_t DateTime::daySince2000()
     return days;
 }
 
+/**
+ * How many seconds since 2000-01-01 00:00 UTC.
+ *
+ * @return uint32_t seconds since 2000.
+ */
 uint32_t DateTime::secSince2000()
 {
     uint32_t seconds = (uint32_t)daySince2000();
