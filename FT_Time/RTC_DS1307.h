@@ -41,6 +41,7 @@ class RTC_DS1307
     private:
 
     public:
+        /// What output state the sqw pin shall have.
         enum SQW_State {
             DS1307_SQW_ON  = 0x80, ///< sqw always on
             DS1307_SQW_OFF = 0x00, ///< sqw always off
