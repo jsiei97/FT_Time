@@ -2,12 +2,6 @@
  * @file RTC_DS1307.cpp
  * @author Johan Simonsson
  * @brief Interface class for the DS1307 RTC
- *
- * This code is inspired by:
- * Code by JeeLabs http://news.jeelabs.org/code/
- *
- * And the works done by Adafruit
- * https://github.com/adafruit/RTClib
  */
 
 /*

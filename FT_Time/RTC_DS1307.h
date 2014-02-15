@@ -2,12 +2,6 @@
  * @file RTC_DS1307.h
  * @author Johan Simonsson
  * @brief Interface class for the DS1307 RTC
- *
- * This code is inspired by:
- * Code by JeeLabs http://news.jeelabs.org/code/
- *
- * And the works done by Adafruit
- * https://github.com/adafruit/RTClib
  */
 
 /*
@@ -32,7 +26,16 @@
 
 #include "DateTime.h"
 
-// RTC based on the DS1307 chip connected via I2C and the Wire library
+
+/**
+ * RTC based on the DS1307 chip connected via I2C and the Wire library
+ *
+ * This code is inspired by:
+ * Code by JeeLabs http://news.jeelabs.org/code/
+ *
+ * And the works done by Adafruit
+ * https://github.com/adafruit/RTClib
+ */
 class RTC_DS1307
 {
     private:

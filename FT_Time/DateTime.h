@@ -26,6 +26,9 @@
 
 #include <inttypes.h>
 
+/**
+ * A date time class where data is stored as bcd data
+ */
 class DateTime
 {
     public:

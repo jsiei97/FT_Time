@@ -26,6 +26,9 @@
 
 #include <Ethernet.h>
 
+/**
+ * Get the time from QuickDate.php and save into a DS1307
+ */
 class QuickDate
 {
     private:
