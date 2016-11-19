@@ -11,8 +11,6 @@
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
 byte mac[] = { 0xEE, 0xFF, 0xBE, 0xEF, 0xFE, 0xED };
 
-char server[] = "bender";
-
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192,168,0,177);
 
@@ -23,8 +21,8 @@ EthernetClient client;
 QuickDate qd;
 char qdBuff[25];
 
-DateTime now;
-DateTime last;
+DateTime now;  // Current time in RTC
+DateTime last; // Last time rtc was updated
 RTC_DS1307 rtc;
 
 
@@ -64,13 +62,18 @@ void loop()
     //Feed the dog.
     wdt_reset();
 
+    // Update now, so we have correct time to work with.
+    rtc.getTime(&now, &last);
+
+    //Print uptime and time stored in rtc
     Serial.print("Time: ");
     time = millis();
-    //prints time since program started
-    Serial.println(time);
+    Serial.print(time);
+    Serial.print(" - ");
+    Serial.println(now.secSince2000());
 
-    rtc.getTime(&now, &last);
-    if(!rtc.isrunning() || (now.secSince2000()-last.secSince2000()>15) )
+    // If last time sync is older than Xs (like 120s)
+    if(!rtc.isrunning() || (now.secSince2000()-last.secSince2000()>120) )
     {
         int qdStatus = qd.doTimeSync(qdBuff);
         if(qdStatus > 0)
@@ -89,5 +92,5 @@ void loop()
         Serial.println(qdStatus);
     }
 
-    delay(1000);
+    delay(2000);
 }
