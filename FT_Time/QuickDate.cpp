@@ -36,7 +36,7 @@
 int QuickDate::doTimeSync(char* buff)
 {
     /// @todo dynamic server name... (same as the MQTT server? FT_EDS?)
-    if (client.connect("scruffy", 80))
+    if (client.connect("bender", 80))
     {
         //Serial.println("connected");
         // Make a HTTP request:
