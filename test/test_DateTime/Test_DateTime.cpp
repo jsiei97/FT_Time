@@ -37,6 +37,9 @@ class Test_DateTime : public QObject
         void test_setTime();
         void test_setTime_data();
 
+        void test_setTime_fail();
+        void test_setTime_fail_data();
+
         void test_timeSince2000();
         void test_timeSince2000_data();
 };
@@ -100,8 +103,6 @@ void Test_DateTime::test_setTime_data()
     QTest::newRow("test") << "2013-12-29T20:24:45Z_7";
     QTest::newRow("test") << "2013-12-30T12:12:09Z_1";
     QTest::newRow("test") << "2014-01-06T09:05:03Z_1";
-
-    /// @todo some negative tests that bad string fail!!!
 }
 
 void Test_DateTime::test_setTime()
@@ -128,6 +129,57 @@ void Test_DateTime::test_setTime()
 
     // compare weekday
     QCOMPARE(quickDateString.mid(21,1).toInt(), (int)dt.bcd2uint(dt.dow));
+}
+
+void Test_DateTime::test_setTime_fail_data()
+{
+    QTest::addColumn<QString>("quickDateString");
+
+    //To short
+    QTest::newRow("test") << "";
+    QTest::newRow("test") << "2013-12-30";
+    QTest::newRow("test") << "2013-12-31T";
+    QTest::newRow("test") << "2013-12-29T2";
+    QTest::newRow("test") << "2013-12-30T12";
+    QTest::newRow("test") << "2014-01-06T09:";
+    QTest::newRow("test") << "2014-01-06T09:0";
+    QTest::newRow("test") << "2014-01-06T09:05";
+    QTest::newRow("test") << "2014-01-06T09:05:";
+    QTest::newRow("test") << "2014-01-06T09:05:0";
+    QTest::newRow("test") << "2014-01-06T09:05:03";
+    QTest::newRow("test") << "2014-01-06T09:05:03Z";
+    QTest::newRow("test") << "2014-01-06T09:05:03Z_";
+
+    //To long
+    QTest::newRow("long") << "2014-01-06T09:05:03Z_1_";
+    QTest::newRow("long") << "2014-01-06T09:05:03Z_1_kugjkhkhuh";
+
+
+    //Bad syntax
+    QTest::newRow("syntax") << "2014 01-06T09:05:03Z_1";
+    QTest::newRow("syntax") << "2014-01 06T09:05:03Z_1";
+    QTest::newRow("syntax") << "2014-01-06 09:05:03Z_1";
+    QTest::newRow("syntax") << "2014-01-06T09 05:03Z_1";
+    QTest::newRow("syntax") << "2014-01-06T09:05 03Z_1";
+    QTest::newRow("syntax") << "2014-01-06T09:05:03 _1";
+    QTest::newRow("syntax") << "2014-01-06T09:05:03Z 1";
+    QTest::newRow("syntax") << "2014-01-06T09:05:03Z_ ";
+}
+
+/**
+ * Test that we fail with bad data.
+ */
+void Test_DateTime::test_setTime_fail()
+{
+    QFETCH(QString, quickDateString);
+    DateTime dt;
+    quickDateString = quickDateString.trimmed();
+
+    char* str = quickDateString.toAscii().data();
+    //str[22]='\0'; //Fix test input!!!
+    //qDebug() << str;
+
+    QCOMPARE(dt.setTime(str), false);
 }
 
 void Test_DateTime::test_timeSince2000_data()

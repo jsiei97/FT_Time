@@ -60,7 +60,7 @@ DateTime::DateTime()
 bool DateTime::setTime(char* quickDateString)
 {
     int len = strlen(quickDateString);
-    if(len < 22)
+    if(len != 22)
     {
         return false;
     }
