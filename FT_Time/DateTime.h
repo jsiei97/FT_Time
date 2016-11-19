@@ -40,6 +40,7 @@ class DateTime
         uint16_t daySince2000();
         uint32_t secSince2000();
 
+        bool isoDateString(char* str);
     public:
         uint8_t year;  ///< 2 digit year 2000..2099 is 00..99 in BCD
         uint8_t month; ///< Month in BCD

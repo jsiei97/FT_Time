@@ -23,6 +23,7 @@
 
 #include <inttypes.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "DateTime.h"
 
@@ -51,7 +52,7 @@ DateTime::DateTime()
  * ss is 2 digit second with leading zero.
  * Z_ is the chars Z and _.
  * w is 1 digit day of week.
- * 
+ *
  * Example: 2014-01-06T09:05:03Z_1
  *
  * @param quickDateString the date string
@@ -211,4 +212,25 @@ uint32_t DateTime::secSince2000()
     seconds += bcd2uint(sec);
 
     return seconds;
+}
+
+
+/**
+ * get a ISO 8601 string
+ *
+ * @param [out] the date string
+ * @return true is ok
+ */
+bool DateTime::isoDateString(char* str)
+{
+    snprintf(str, 21, "20%02x-%02x-%02xT%02x:%02x:%02xZ",
+            year, month, day,
+            hour, min, sec);
+    str[20] = '\0';
+
+    //If init is missing
+    if(year == 0)
+        return false;
+
+    return true;
 }

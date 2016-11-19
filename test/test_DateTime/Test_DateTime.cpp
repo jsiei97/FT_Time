@@ -42,6 +42,9 @@ class Test_DateTime : public QObject
 
         void test_timeSince2000();
         void test_timeSince2000_data();
+
+        void test_isoDateString();
+        void test_isoDateString_data();
 };
 
 void Test_DateTime::test_bcd2uint_data()
@@ -269,6 +272,42 @@ void Test_DateTime::test_timeSince2000()
     QCOMPARE((unsigned int)dt.daySince2000(), days);
     QCOMPARE((unsigned int)dt.secSince2000(), sec);
 }
+
+
+void Test_DateTime::test_isoDateString_data()
+{
+    QTest::addColumn<QString>("quickDateString");
+    QTest::addColumn<QString>("isoString");
+
+    QTest::newRow("date01")
+        << "2013-12-30T23:01:56Z_1"
+        << "2013-12-30T23:01:56Z";
+
+    QTest::newRow("date01")
+        << "2015-09-30T20:05:58Z_1"
+        << "2015-09-30T20:05:58Z";
+}
+
+void Test_DateTime::test_isoDateString()
+{
+    QFETCH(QString, quickDateString);
+    QFETCH(QString, isoString);
+
+    quickDateString = quickDateString.trimmed();
+
+    DateTime dt;
+    char* str = quickDateString.toAscii().data();
+    //str[22]='\0'; //Fix test input!!!
+    //qDebug() << str;
+
+    char iso[21];
+
+    QCOMPARE(dt.isoDateString(iso), false);
+    QVERIFY(dt.setTime(str));
+    QVERIFY(dt.isoDateString(iso));
+    QCOMPARE(isoString, QString(iso));
+}
+
 
 QTEST_MAIN(Test_DateTime)
 #include "Test_DateTime.moc"
