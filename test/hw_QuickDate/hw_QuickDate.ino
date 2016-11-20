@@ -20,6 +20,7 @@ IPAddress ip(192,168,0,177);
 EthernetClient client;
 QuickDate qd;
 char qdBuff[25];
+char isoDate[25];
 
 DateTime now;  // Current time in RTC
 DateTime last; // Last time rtc was updated
@@ -65,12 +66,20 @@ void loop()
     // Update now, so we have correct time to work with.
     rtc.getTime(&now, &last);
 
-    //Print uptime and time stored in rtc
+    //Print:
+    // 1. uptime from internal clock
+    // 2. current time in RTC
+    // 3. last synced time stored in the RTC
     Serial.print("Time: ");
     time = millis();
     Serial.print(time);
     Serial.print(" - ");
-    Serial.println(now.secSince2000());
+    now.isoDateString(isoDate);
+    Serial.print(isoDate);
+    last.isoDateString(isoDate);
+    Serial.print(" (");
+    Serial.print(isoDate);
+    Serial.println(")");
 
     // If last time sync is older than Xs (like 120s)
     if(!rtc.isrunning() || (now.secSince2000()-last.secSince2000()>120) )
