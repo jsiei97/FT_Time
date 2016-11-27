@@ -36,6 +36,8 @@ DateTime::DateTime()
         min   = 0;
         sec   = 0;
         dow   = 0;
+
+        isClockSet = false;
 }
 
 /**
@@ -87,6 +89,8 @@ bool DateTime::setTime(char* quickDateString)
         sec  = str2bcd( quickDateString[17], quickDateString[18] );
 
         dow  = str2bcd( '0', quickDateString[21] );
+
+        isClockSet = true;
         return true;
     }
     return false;
@@ -142,6 +146,9 @@ uint8_t DateTime::str2bcd(char ch0, char ch1)
  */
 uint16_t DateTime::daySince2000()
 {
+    if(!isClockSet) 
+        return 0;
+
     uint16_t days = 0;
 
     //First some years.
@@ -204,6 +211,9 @@ uint16_t DateTime::daySince2000()
  */
 uint32_t DateTime::secSince2000()
 {
+    if(!isClockSet) 
+        return 0;
+
     uint32_t seconds = (uint32_t)daySince2000();
     seconds *= 86400;
 

@@ -45,6 +45,8 @@ class Test_DateTime : public QObject
 
         void test_isoDateString();
         void test_isoDateString_data();
+
+        void test_init();
 };
 
 void Test_DateTime::test_bcd2uint_data()
@@ -308,6 +310,17 @@ void Test_DateTime::test_isoDateString()
     QCOMPARE(isoString, QString(iso));
 }
 
+void Test_DateTime::test_init()
+{
+    DateTime dt;
+    QCOMPARE((unsigned int)dt.daySince2000(), (unsigned int)0);
+    QCOMPARE((unsigned int)dt.secSince2000(), (unsigned int)0);
+
+    QCOMPARE(dt.isClockSet, false);
+    char str[] = "2013-12-30T23:01:56Z_1";
+    QVERIFY( dt.setTime(str));
+    QCOMPARE(dt.isClockSet, true);
+}
 
 QTEST_MAIN(Test_DateTime)
 #include "Test_DateTime.moc"

@@ -41,7 +41,9 @@ class DateTime
         uint32_t secSince2000();
 
         bool isoDateString(char* str);
+
     public:
+        //The variables here is read only, do NOT write to any of them!
         uint8_t year;  ///< 2 digit year 2000..2099 is 00..99 in BCD
         uint8_t month; ///< Month in BCD
         uint8_t day;   ///< Day in month in BCD
@@ -49,6 +51,8 @@ class DateTime
         uint8_t min;   ///< Minute in BCD
         uint8_t sec;   ///< Second in BCD
         uint8_t dow;   ///< Day of week, 1..7 where 1 is monday in BCD
+
+        bool isClockSet; ///< True when setTime has been called.
 };
 
 #endif  // __DATETIME_H
