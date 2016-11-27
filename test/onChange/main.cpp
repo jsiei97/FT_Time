@@ -12,10 +12,19 @@
 unsigned int value(unsigned int val)
 {
     static int cnt=0;
+    static bool skip = false;
 
-    if(cnt%7==0)
+    if(cnt%22==0)
     {
-        val++;
+        if(true == skip)
+        {
+            val++;
+            skip = false;
+        }
+        else
+        {
+            skip = true;
+        }
     }
 
     cnt++;
@@ -27,45 +36,57 @@ int main()
 {
     printf("Test how send on change would look like\n");
 
-    DateTime dtOld;
-    DateTime dtNow;
+    DateTime now;   ///< Current time
+    DateTime dtOld; ///< Last time value checked
+    DateTime dtSent;///< Last time value was sent
 
-    unsigned int valueNow=10;
-    unsigned int valueOld=valueNow;
+    unsigned int valueNow=10;       ///< Current value
+    unsigned int valueSent=valueNow;///< Last value sent
 
     char str[30];
     char iso[30];
 
     bool oneMore = true;
 
-    for( int h=1 ; h<6 ; h++ )
+    for( int h=0 ; h<6 ; h++ )
     {
-        for( int m=0 ; m<59 ; m+=10 )
+        for( int m=0 ; m<59 ; m+=2 )
         {
             snprintf(str, 30, "2016-11-27T%02d:%02d:00Z_6", h, m);
             //printf("%s\n", str);
-            //dtNow.setTime(str);
+            now.setTime(str);
 
             valueNow = value(valueNow);
-            if(valueOld != valueNow)
+            if( ( valueSent != valueNow ))
             {
-                //There is a new value, send the last one first.
-                dtOld.isoDateString(iso);
-                printf("\t%03d %s\n", valueOld, iso );
+                if(dtOld.isoDateString(iso))
+                {
+                    //There is a new value, send the last one first.
+                    printf("\t%03d %s\n", valueSent, iso );
+                }
 
                 //Mark that it is sent
-                valueOld=valueNow;
-                dtOld.setTime(str);
+                valueSent=valueNow;
+                dtSent.setTime(str);
 
                 //Then send the new one
-                dtOld.isoDateString(iso);
+                dtSent.isoDateString(iso);
                 printf("\t%03d %s\n", valueNow, iso );
 
                 oneMore = true;
             }
+            else if ( (now.secSince2000()-dtSent.secSince2000()) >= (30*60) )
+            {
+                // No change for 30min, send anyway
+                dtSent.setTime(str);
+                dtSent.isoDateString(iso);
+                printf("\t%03d %s\n", valueNow, iso );
+                printf("\n");
+
+            }
             else
             {
-                //Check time since last
+                //Update time since last
                 dtOld.setTime(str);
 
                 if(oneMore==true)
@@ -74,6 +95,7 @@ int main()
                     //so we can calc
                     dtOld.isoDateString(iso);
                     printf("\t%03d %s\n", valueNow, iso );
+	                printf("\n");
                     oneMore=false;
                 }
             }
