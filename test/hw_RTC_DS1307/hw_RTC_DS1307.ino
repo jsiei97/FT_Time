@@ -7,6 +7,7 @@
 DateTime now;
 DateTime last;
 RTC_DS1307 rtc;
+char isoDate[25];
 
 void setup()
 {
@@ -22,14 +23,12 @@ void setup()
     Serial.println("*********************");
     Serial.println("*** Setup done... ***");
     Serial.println("*********************");
-
-
 }
 
 unsigned long time;
 void loop()
 {
-    Serial.print("Time: ");
+    Serial.print("Millis: ");
     time = millis();
     //prints time since program started
     Serial.println(time);
@@ -66,16 +65,23 @@ void loop()
 
     rtc.getTime(&now, &last);
 
-    char datestr[25];
-    snprintf(datestr, 24, "20%02x-%02x-%02x %02x:%02x:%02x %01x",
-            now.year, now.month, now.day,
-            now.hour, now.min, now.sec,
-            now.dow);
-    Serial.println(datestr);
+    now.isoDateString(isoDate);
+    Serial.print(isoDate);
+    last.isoDateString(isoDate);
+    Serial.print(" ( ");
+    Serial.print(isoDate);
+    Serial.println(" )");
+
 
     uint32_t timeSinceSync = now.secSince2000()-last.secSince2000();
+    if(0==timeSinceSync) {
+        Serial.println("Not synced this session");
+        //Serial.println( now.secSince2000());
+        //Serial.println(last.secSince2000());
+    } else {
+        Serial.print("Last sync: ");
+        Serial.println(timeSinceSync);
+    }
 
-    Serial.print("Last sync: ");
-    Serial.println(timeSinceSync);
-
+    Serial.println();
 }
