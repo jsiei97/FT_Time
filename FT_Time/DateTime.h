@@ -34,6 +34,8 @@ class DateTime
     public:
         DateTime();
         bool setTime(char* quickDateString);
+        bool isTimeSet();
+
         uint8_t bcd2uint(uint8_t bcd);
         uint8_t str2bcd(char, char);
 

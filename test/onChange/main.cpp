@@ -56,7 +56,9 @@ int main()
             //printf("%s\n", str);
             now.setTime(str);
 
+            //Testfunction that simulates data now and then.
             valueNow = value(valueNow);
+
             if( ( valueSent != valueNow ))
             {
                 if(dtOld.isoDateString(iso))

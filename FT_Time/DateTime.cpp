@@ -29,15 +29,17 @@
 
 DateTime::DateTime()
 {
-        year  = 0;
-        month = 0;
-        day   = 0;
-        hour  = 0;
-        min   = 0;
-        sec   = 0;
-        dow   = 0;
+    // Init to 2000-01-01 00:00
+    // since this is "time 0" for DS1307.
+    year  = 0;
+    month = 1;
+    day   = 1;
+    hour  = 0;
+    min   = 0;
+    sec   = 0;
+    dow   = 0;
 
-        isClockSet = false;
+    isClockSet = false;
 }
 
 /**
@@ -97,6 +99,16 @@ bool DateTime::setTime(char* quickDateString)
 }
 
 /**
+ * Is this clock updated?
+ *
+ * @return true if updated
+ */
+bool DateTime::isTimeSet()
+{
+    return isClockSet;
+}
+
+/**
  * Convert a bcd (binary code decimal) into a normal number.
  *
  * If bcd is 0x43 the number becomes 43.
@@ -146,9 +158,6 @@ uint8_t DateTime::str2bcd(char ch0, char ch1)
  */
 uint16_t DateTime::daySince2000()
 {
-    if(!isClockSet)
-        return 0;
-
     uint16_t days = 0;
 
     //First some years.
@@ -211,9 +220,6 @@ uint16_t DateTime::daySince2000()
  */
 uint32_t DateTime::secSince2000()
 {
-    if(!isClockSet)
-        return 0;
-
     uint32_t seconds = (uint32_t)daySince2000();
     seconds *= 86400;
 
