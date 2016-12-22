@@ -41,6 +41,7 @@ class DateTime
         uint32_t secSince2000();
 
         bool isoDateString(char* str);
+        bool appendIsoDateString(char* str, unsigned int size);
 
     public:
         //The variables here is read only, do NOT write to any of them!

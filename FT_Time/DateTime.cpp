@@ -146,7 +146,7 @@ uint8_t DateTime::str2bcd(char ch0, char ch1)
  */
 uint16_t DateTime::daySince2000()
 {
-    if(!isClockSet) 
+    if(!isClockSet)
         return 0;
 
     uint16_t days = 0;
@@ -211,7 +211,7 @@ uint16_t DateTime::daySince2000()
  */
 uint32_t DateTime::secSince2000()
 {
-    if(!isClockSet) 
+    if(!isClockSet)
         return 0;
 
     uint32_t seconds = (uint32_t)daySince2000();
@@ -243,4 +243,33 @@ bool DateTime::isoDateString(char* str)
         return false;
 
     return true;
+}
+
+/**
+ * append a ISO 8601 string
+ *
+ * @param [in,out] appends the date string to this string
+ * @param [in] size is string size
+ * @return true is ok
+ */
+bool DateTime::appendIsoDateString(char* str, unsigned int size)
+{
+    unsigned int pos = 0;
+
+    for( pos = 0 ; pos<size ; pos++ )
+    {
+        if(str[pos]=='\0')
+            break;
+    }
+
+    //printf("pos %d\n", pos);
+
+    if(pos+21 > size)
+    {
+        //Will not fit
+        return false;
+    }
+
+    char* p = &(str[pos]);
+    return isoDateString(p);
 }

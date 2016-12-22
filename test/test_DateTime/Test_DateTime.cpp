@@ -46,6 +46,8 @@ class Test_DateTime : public QObject
         void test_isoDateString();
         void test_isoDateString_data();
 
+        void test_appendIsoDateString();
+
         void test_init();
 };
 
@@ -308,6 +310,23 @@ void Test_DateTime::test_isoDateString()
     QVERIFY(dt.setTime(str));
     QVERIFY(dt.isoDateString(iso));
     QCOMPARE(isoString, QString(iso));
+}
+
+void Test_DateTime::test_appendIsoDateString()
+{
+    char qd[]  = "2015-09-30T20:05:58Z_1";
+    //char iso[] = "2015-09-30T20:05:58Z";
+
+    DateTime dt;
+    QVERIFY(dt.setTime(qd));
+
+    char str[60];
+
+    sprintf(str,"energy=62.000 kWh ");
+    //qDebug() << str;
+
+    QVERIFY( dt.appendIsoDateString(str, 60) );
+    QCOMPARE(str, "energy=62.000 kWh 2015-09-30T20:05:58Z");
 }
 
 void Test_DateTime::test_init()
