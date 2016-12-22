@@ -18,6 +18,14 @@ void setup()
     }
 
     Wire.begin();
+    if(rtc.isrunning())
+    {
+        Serial.println("Clock is running");
+    }
+    else
+    {
+        Serial.println("Clock is NOT running");
+    }
 
     Serial.println();
     Serial.println("*********************");
@@ -38,16 +46,6 @@ void loop()
     //2. start this program
     //3. The DS1307 status led will be on for approx 10s
     //4. Then as the time is adjusted the led will start to blink
-
-    if(rtc.isrunning())
-    {
-        Serial.println("Clock is running");
-    }
-    else
-    {
-        Serial.println("Clock is NOT running");
-    }
-
 
     for(int i=0; i<10; i++)
     {
