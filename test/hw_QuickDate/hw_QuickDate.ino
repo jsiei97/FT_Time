@@ -14,11 +14,8 @@ byte mac[] = { 0xEE, 0xFF, 0xBE, 0xEF, 0xFE, 0xED };
 // Set the static IP address to use if the DHCP fails to assign
 IPAddress ip(192,168,0,177);
 
-// Initialize the Ethernet client library
-// with the IP address and port of the server
-// that you want to connect to (port 80 is default for HTTP):
-EthernetClient client;
-QuickDate qd;
+// Initialize QuickDate with a server with QuickDate
+QuickDate qd("bender");
 char qdBuff[25];
 char isoDate[25];
 
@@ -31,9 +28,6 @@ void setup()
 {
     // Open serial communications and wait for port to open:
     Serial.begin(9600);
-    while (!Serial) {
-        ; // wait for serial port to connect. Needed for Leonardo only
-    }
 
     //http://www.nongnu.org/avr-libc/user-manual/group__avr__watchdog.html
     wdt_enable(WDTO_8S);

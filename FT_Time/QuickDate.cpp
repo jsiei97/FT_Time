@@ -24,6 +24,19 @@
 #include <Ethernet.h>
 #include "QuickDate.h"
 
+QuickDate::QuickDate(char* quickdateserver)
+{
+    int len = strlen(quickdateserver);
+    server = (char*)malloc(len+1);
+    memcpy(server , quickdateserver, len);
+    server[len] = '\0';
+}
+
+QuickDate::~QuickDate()
+{
+    free(server);
+}
+
 /**
  * Do timesync if it is time
  *
@@ -35,8 +48,7 @@
  */
 int QuickDate::doTimeSync(char* buff)
 {
-    /// @todo dynamic server name... (same as the MQTT server? FT_EDS?)
-    if (client.connect("bender", 80))
+    if (client.connect(server, 80))
     {
         //Serial.println("connected");
         // Make a HTTP request:

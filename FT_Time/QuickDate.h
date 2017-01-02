@@ -34,7 +34,12 @@ class QuickDate
     private:
         EthernetClient client; ///< The http client
 
+        char* server;
+
     public:
+        QuickDate(char*);
+        ~QuickDate();
+
         int doTimeSync(char*);
 
 };
